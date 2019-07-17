@@ -48,7 +48,7 @@ cowsay "INSTALL PHP5.6W"
 echo ""
 sleep 5
 yum remove php*
-yum install php56w php56w-pdo php56w-mysql php56w-mbstring php56w-pear php56w-process php56w-xml php56w-opcache php56w-ldap php56w-intl php56w-soap
+yum -y install php56w php56w-pdo php56w-mysql php56w-mbstring php56w-pear php56w-process php56w-xml php56w-opcache php56w-ldap php56w-intl php56w-soap
 clear
 echo ""
 cowsay "INSTALL NODEJS"
