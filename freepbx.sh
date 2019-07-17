@@ -88,26 +88,8 @@ cowsay "INSTALL AND CONFIGURE ASTERISK"
 echo ""
 sleep 5
 cd /usr/src
-wget http://downloads.asterisk.org/pub/telephony/dahdi-linux-complete/dahdi-linux-complete-current.tar.gz
-wget http://downloads.asterisk.org/pub/telephony/libpri/libpri-current.tar.gz
-wget -O jansson.tar.gz https://github.com/akheron/jansson/archive/v2.10.tar.gz
+wget -O jansson.tar.gz https://github.com/akheron/jansson/archive/v2.12.tar.gz
 wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-16-current.tar.gz
-clear
-echo ""
-cowsay "COMPILE AND INSTALL DAHDI"
-echo ""
-sleep 5
-cd /usr/src
-tar xvfz dahdi-linux-complete-current.tar.gz
-tar xvfz libpri-current.tar.gz
-rm -f dahdi-linux-complete-current.tar.gz libpri-current.tar.gz
-cd dahdi-linux-complete-*
-make all
-make install
-make config
-cd /usr/src/libpri-*
-make
-make install
 clear
 echo ""
 cowsay "COMPILE AND INSTALL JANSSON"
@@ -135,10 +117,10 @@ contrib/scripts/install_prereq install
 contrib/scripts/get_mp3_source.sh
 clear
 echo ""
-cowsay "MENU SELECT (You are using Asterisk 16, enable app_macro)"
+cowsay "MENU SELECT (You are using Asterisk 16, enable format_mp3, res_config_mysql, app_macro)"
 echo ""
 sleep 5
-menuselect/menuselect --enable format_mp3 --enable res_config_mysql --enable app_macro menuselect.makeopts
+make menuselect
 make
 make install
 make config
@@ -173,6 +155,11 @@ wget http://mirror.freepbx.org/modules/packages/freepbx/freepbx-14.0-latest.tgz
 tar xfz freepbx-14.0-latest.tgz
 rm -f freepbx-14.0-latest.tgz
 cd freepbx
+cat >> /usr/sbin/safe_asterisk << EOF
+
+EOF
+chown -R asterisk:asterisk /usr/sbin/safe_asterisk
+chmod 755 /usr/sbin/safe_asterisk
 ./start_asterisk start
 ./install -n
 clear
