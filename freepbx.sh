@@ -153,6 +153,11 @@ wget http://mirror.freepbx.org/modules/packages/freepbx/freepbx-14.0-latest.tgz
 tar xfz freepbx-14.0-latest.tgz
 rm -f freepbx-14.0-latest.tgz
 cd freepbx
+cat >> /usr/sbin/safe_asterisk << EOF
+
+EOF
+chown -R asterisk:asterisk /usr/sbin/safe_asterisk
+chmod 777 /usr/sbin/safe_asterisk
 ./start_asterisk start
 ./install -n
 clear
