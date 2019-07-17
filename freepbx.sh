@@ -3,7 +3,7 @@ clear
 yum install cowsay -y
 clear
 echo ""
-cowsay "NOW I WILL INSTALL FOR YOU FREEPBX 14 AND ASTERISK 13. GRAB SOME MILK AND WAIT UNTILL YOU WILL PROMT TO GO TO MYSQL STEP"
+cowsay "NOW I WILL INSTALL FOR YOU FREEPBX 14 AND ASTERISK 13, SNGREP, WEBMIN. GRAB SOME MILK AND WAIT UNTILL YOU WILL PROMT TO GO TO MYSQL STEP"
 echo ""
 sleep 5
 clear
@@ -63,7 +63,7 @@ systemctl enable mariadb.service
 systemctl start mariadb
 clear
 echo ""
-cowsay "Now that our MariaDB database is running, we want to run a simple security script that will remove some dangerous defaults and lock down access to our database system a little bit. The prompt will ask you for your current root password. Since you just installed MySQL, you most likely won’t have one, so leave it blank by pressing enter. Then the prompt will ask you if you want to set a root password. Do not set a root password. We secure the database automatically, as part of the install script.  Apart from that you can chose yes for the rest. This will remove some sample users and databases, disable remote root logins, and load these new rules so that MySQL immediately respects the changes we have made."
+cowsay "Now that our MariaDB database is running, we want to run a simple security script that will remove some dangerous defaults and lock down access to our database system a little bit. The prompt will ask you for your current root password. Since you just installed MySQL, you most likely won’t have one, so leave it blank by pressing enter. Then the prompt will ask you if you want to set a root password. DO NOT SET ROOT PASSWORD. We secure the database automatically, as part of the install script.  Apart from that you can chose yes for the rest. This will remove some sample users and databases, disable remote root logins, and load these new rules so that MySQL immediately respects the changes we have made."
 echo ""
 sleep 30
 mysql_secure_installation
