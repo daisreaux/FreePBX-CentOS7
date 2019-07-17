@@ -113,7 +113,7 @@ tar xvfz asterisk-16-current.tar.gz
 rm -f asterisk-*-current.tar.gz
 cd asterisk-*
 contrib/scripts/install_prereq install
-./configure --libdir=/usr/lib64 --with-pjproject-bundled
+./configure --libdir=/usr/lib64 --with-pjproject-bundled --with-jansson-bundled
 contrib/scripts/get_mp3_source.sh
 clear
 echo ""
