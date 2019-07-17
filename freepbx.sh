@@ -54,7 +54,7 @@ echo ""
 cowsay "INSTALL NODEJS"
 echo ""
 sleep 5
-curl -sL https://rpm.nodesource.com/setup_8.x | bash -
+curl -sL https://rpm.nodesource.com/setup_12.x | bash -
 yum install -y nodejs
 clear
 echo ""
@@ -89,7 +89,7 @@ echo ""
 sleep 5
 cd /usr/src
 wget -O jansson.tar.gz https://github.com/akheron/jansson/archive/v2.12.tar.gz
-wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-16-current.tar.gz
+wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-13-current.tar.gz
 clear
 echo ""
 cowsay "COMPILE AND INSTALL JANSSON"
@@ -109,7 +109,7 @@ cowsay "COMPILE AND INSTALL ASTERISK"
 echo ""
 sleep 5
 cd /usr/src
-tar xvfz asterisk-16-current.tar.gz
+tar xvfz asterisk-13-current.tar.gz
 rm -f asterisk-*-current.tar.gz
 cd asterisk-*
 contrib/scripts/install_prereq install
