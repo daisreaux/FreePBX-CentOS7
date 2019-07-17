@@ -35,18 +35,20 @@ sleep 5
 yum -y install lynx tftp-server unixODBC mysql-connector-odbc mariadb-server mariadb httpd ncurses-devel sendmail sendmail-cf sox newt-devel libxml2-devel libtiff-devel audiofile-devel gtk2-devel subversion kernel-devel git crontabs cronie cronie-anacron wget vim uuid-devel sqlite-devel net-tools gnutls-devel python-devel texinfo libuuid-devel
 clear
 echo ""
-cowsay "INSTALL PHP 5.6 REPOSITORIES"
+cowsay "INSTALL PHP 7.3 REPOSITORIES"
 echo ""
 sleep 5
-rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+yum install -y http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+yum install -y yum-utils
 clear
 echo ""
-cowsay "INSTALL PHP5.6W"
+cowsay "INSTALL PHP7.3"
 echo ""
 sleep 5
 yum -y remove php*
-yum install -y php php-pdo php-mysql php-mbstring php-pear php-process php-xml php-opcache php-ldap php-intl php-soap
+yum-config-manager --enable remi-php73
+yum install -y php php-pdo php-mysql php-mbstring php-pear php-process php-xml php-opcache php-ldap php-intl php-soap php-mcrypt php-cli php-gd php-curl php-mysql php-ldap php-zip php-fileinfo 
 clear
 echo ""
 cowsay "INSTALL NODEJS"
@@ -87,7 +89,7 @@ echo ""
 sleep 5
 cd /usr/src
 wget -O jansson.tar.gz https://github.com/akheron/jansson/archive/v2.12.tar.gz
-wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-13-current.tar.gz
+git clone -b 16 http://gerrit.asterisk.org/asterisk asterisk-16
 clear
 echo ""
 cowsay "COMPILE AND INSTALL JANSSON"
@@ -107,8 +109,6 @@ cowsay "COMPILE AND INSTALL ASTERISK"
 echo ""
 sleep 5
 cd /usr/src
-tar xvfz asterisk-13-current.tar.gz
-rm -f asterisk-*-current.tar.gz
 cd asterisk-*
 contrib/scripts/install_prereq install
 ./configure --libdir=/usr/lib64 --with-pjproject-bundled --with-jansson-bundled
@@ -118,7 +118,8 @@ echo ""
 cowsay "MENU SELECT (If you are using Asterisk 16, enable format_mp3, res_config_mysql, app_macro)"
 echo ""
 sleep 5
-make menuselect
+make menuselect.makeopts
+menuselect/menuselect --enable app_macro --enable format_mp3 --enable res_config_mysql menuselect.makeopts
 make
 make install
 make config
