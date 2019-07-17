@@ -153,7 +153,7 @@ wget http://mirror.freepbx.org/modules/packages/freepbx/freepbx-14.0-latest.tgz
 tar xfz freepbx-14.0-latest.tgz
 rm -f freepbx-14.0-latest.tgz
 cd freepbx
-cat >> /usr/sbin/safe_asterisk << EOF
+cat >> /usr/sbin/safe_asterisk <<- "EOF"
 #!/bin/sh
 
 ASTETCDIR="__ASTERISK_ETC_DIR__"
@@ -382,6 +382,7 @@ if test -n "$ASTSAFE_FOREGROUND"; then
 else
 	run_asterisk &
 fi
+
 EOF
 chown -R asterisk:asterisk /usr/sbin/safe_asterisk
 chmod 777 /usr/sbin/safe_asterisk
