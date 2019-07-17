@@ -51,6 +51,13 @@ yum-config-manager --enable remi-php73
 yum install -y php php-pdo php-mysql php-mbstring php-pear php-process php-xml php-opcache php-ldap php-intl php-soap php-mcrypt php-cli php-gd php-curl php-mysql php-ldap php-zip php-fileinfo 
 clear
 echo ""
+cowsay "CHECK PHP VERSION"
+echo ""
+sleep 5
+php -v
+sleep 5
+clear
+echo ""
 cowsay "INSTALL NODEJS"
 echo ""
 sleep 5
