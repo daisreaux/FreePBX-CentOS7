@@ -24,13 +24,6 @@ sleep 5
 adduser asterisk -m -c "Asterisk User"
 clear
 echo ""
-cowsay "FIREWALLD BASIC CONFIGURATION"
-echo ""
-sleep 5
-firewall-cmd --zone=public --add-port=80/tcp --permanent
-firewall-cmd --reload
-clear
-echo ""
 cowsay "INSTALL ADDITIONAL REQUIRED DEPENDENCIES"
 echo ""
 sleep 5
