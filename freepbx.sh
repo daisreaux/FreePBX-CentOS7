@@ -200,6 +200,35 @@ ln -s '/etc/systemd/system/freepbx.service' '/etc/systemd/system/multi-user.targ
 systemctl start freepbx
 clear
 echo ""
+cowsay "DOWNLOAD AND INSTALL SOME FREEPBX MODULES"
+echo ""
+sleep 5
+fwconsole ma downloadinstall cel
+fwconsole ma downloadinstall configedit
+fwconsole ma downloadinstall manager
+fwconsole ma downloadinstall calendar
+fwconsole ma downloadinstall timeconditions
+fwconsole ma downloadinstall bulkhandler
+fwconsole ma downloadinstall customcontexts
+fwconsole ma downloadinstall ringgroups
+fwconsole ma downloadinstall queues
+fwconsole ma downloadinstall ivr
+fwconsole ma downloadinstall asteriskinfo
+fwconsole ma downloadinstall iaxsettings
+fwconsole ma downloadinstall backup
+fwconsole ma downloadinstall callforward
+fwconsole ma downloadinstall announcement
+fwconsole ma downloadinstall callrecording
+fwconsole ma downloadinstall daynight
+fwconsole ma downloadinstall extensionsettings
+fwconsole ma downloadinstall featurecodeadmin
+fwconsole ma downloadinstall recordings
+fwconsole ma downloadinstall sipsettings
+fwconsole ma downloadinstall soundlang
+fwconsole ma downloadinstall voicemail
+fwconsole r a
+clear
+echo ""
 cowsay "DONE! REBOOT IN 15 SECONDS"
 echo ""
 sleep 15
