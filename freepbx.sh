@@ -159,7 +159,7 @@ echo ""
 cowsay "INSTALL AND CONFIGURE FREEPBX"
 echo ""
 sleep 5
-sed -i 's/\(^upload_max_filesize = \).*/\1500M/' /etc/php.ini
+sed -i 's/\(^upload_max_filesize = \).*/\120M/' /etc/php.ini
 sed -i 's/^\(User\|Group\).*/\1 asterisk/' /etc/httpd/conf/httpd.conf
 sed -i 's/AllowOverride None/AllowOverride All/' /etc/httpd/conf/httpd.conf
 systemctl restart httpd.service
