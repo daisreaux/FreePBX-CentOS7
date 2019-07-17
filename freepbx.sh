@@ -144,7 +144,7 @@ echo ""
 cowsay "INSTALL AND CONFIGURE FREEPBX"
 echo ""
 sleep 5
-sed -i 's/\(^upload_max_filesize = \).*/\120M/' /etc/php.ini
+sed -i 's/\(^upload_max_filesize = \).*/\120M/' /etc/php/7.3/apache2/php.ini
 sed -i 's/^\(User\|Group\).*/\1 asterisk/' /etc/httpd/conf/httpd.conf
 sed -i 's/AllowOverride None/AllowOverride All/' /etc/httpd/conf/httpd.conf
 systemctl restart httpd.service
@@ -154,9 +154,10 @@ cowsay "DOWNLOAD AND INSTALL FREEPBX"
 echo ""
 sleep 5
 cd /usr/src
-wget http://mirror.freepbx.org/modules/packages/freepbx/freepbx-14.0-latest.tgz
-tar xfz freepbx-14.0-latest.tgz
-rm -f freepbx-14.0-latest.tgz
+wget http://mirror.freepbx.org/modules/packages/freepbx/freepbx-15.0-latest.tgz
+tar vxfz freepbx-15.0-latest.tgz
+rm -f freepbx-15.0-latest.tgz
+touch /etc/asterisk/{modules,cdr}.conf
 cd freepbx
 ./start_asterisk start
 ./install -n
