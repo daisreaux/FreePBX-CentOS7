@@ -3,6 +3,11 @@ clear
 yum install cowsay -y
 clear
 echo ""
+cowsay "NOW I WILL INSTALL FOR YOU FREEPBX 14 AND ASTERISK 13. GRAB SOME MILK AND WAIT UNTILL YOU WILL PROMT TO GO TO MYSQL STEP"
+echo ""
+sleep 5
+clear
+echo ""
 cowsay "DISABLE SELINUX"
 echo ""
 sleep 5
@@ -110,7 +115,7 @@ contrib/scripts/install_prereq install
 contrib/scripts/get_mp3_source.sh
 clear
 echo ""
-cowsay "MENU SELECT (You are using Asterisk 16, enable format_mp3, res_config_mysql, app_macro)"
+cowsay "MENU SELECT (If you are using Asterisk 16, enable format_mp3, res_config_mysql, app_macro)"
 echo ""
 sleep 5
 make menuselect
