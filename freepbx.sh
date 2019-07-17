@@ -229,6 +229,25 @@ fwconsole ma downloadinstall voicemail
 fwconsole r a
 clear
 echo ""
+cowsay "INSTALLING SNGREP"
+echo ""
+sleep 5
+echo '[irontec]
+name=Irontec RPMs repository
+baseurl=http://packages.irontec.com/centos/$releasever/$basearch/
+' > /etc/yum.repos.d/irontec.repo
+rpm --import http://packages.irontec.com/public.key
+yum install sngrep -y
+clear
+echo ""
+cowsay "INSTALLING WEBMIN"
+echo ""
+sleep 5
+yum -y install perl perl-Net-SSLeay openssl perl-IO-Tty perl-Encode-Detect
+wget http://prdownloads.sourceforge.net/webadmin/webmin-1.920-1.noarch.rpm
+rpm -U webmin-1.920-1.noarch.rpm
+clear
+echo ""
 cowsay "DONE! REBOOT IN 15 SECONDS"
 echo ""
 sleep 15
