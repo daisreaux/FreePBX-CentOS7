@@ -217,6 +217,7 @@ echo ""
 cowsay "INSTALLING SNGREP"
 echo ""
 sleep 5
+cd /usr/src
 echo '[irontec]
 name=Irontec RPMs repository
 baseurl=http://packages.irontec.com/centos/$releasever/$basearch/
@@ -228,6 +229,7 @@ echo ""
 cowsay "INSTALLING WEBMIN"
 echo ""
 sleep 5
+cd /usr/src
 yum -y install perl perl-Net-SSLeay openssl perl-IO-Tty perl-Encode-Detect
 wget http://prdownloads.sourceforge.net/webadmin/webmin-1.920-1.noarch.rpm
 rpm -U webmin-1.920-1.noarch.rpm
