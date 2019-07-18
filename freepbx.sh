@@ -1,107 +1,96 @@
 #!/bin/bash
-clear
-yum install cowsay -y
-clear
-echo ""
-cowsay "NOW I WILL INSTALL FOR YOU FREEPBX 14 AND ASTERISK 13, SNGREP, WEBMIN. GRAB SOME MILK AND WAIT UNTILL YOU WILL PROMT TO GO TO MYSQL STEP"
-echo ""
-sleep 5
-clear
-echo ""
-cowsay "DISABLE SELINUX"
-echo ""
-sleep 5
-sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/sysconfig/selinux
-sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/selinux/config
-setenforce 0
-clear
-echo ""
-cowsay "UPDATE YOUR SYSTEM"
-echo ""
-sleep 5
+echo 'Running Asterisk / FreePBX Install'
+START_TIME=$SECONDS
+
+###
+echo 'Checking SELINUX'
+	if sestatus | grep 'SELinux status' | grep enabled ; then
+		echo -e '\tSELinux is enabled... disabling!'
+		  sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/selinux/config 
+		  sed -i 's/\(^SELINUX=\).*/\SELINUX=disabled/' /etc/sysconfig/selinux
+		  echo -e '\t\tSELinux was disabled, you must reboot and rerun script!'
+		  exit 0
+	else
+		echo -e '\tSELinux is disabled, proceeding with install.'
+	fi
+
+###
+echo 'Running Updates'
 yum -y update
-yum -y groupinstall core base "Development Tools"
-clear
-echo ""
-cowsay "ADD THE ASTERISK USER"
-echo ""
-sleep 5
+echo -e '\tUpdates complete.'
+
+###
+echo 'Installing Development Tools'
+yum -y groupinstall core base "Development Tools" 
+echo -e '\tDevelopment tools installed.'
+
+###
+echo 'Adding Asterisk User'
 adduser asterisk -m -c "Asterisk User"
-clear
-echo ""
-cowsay "INSTALL ADDITIONAL REQUIRED DEPENDENCIES"
-echo ""
-sleep 5
-yum -y install lynx tftp-server unixODBC mysql-connector-odbc mariadb-server mariadb httpd ncurses-devel sendmail sendmail-cf sox newt-devel libxml2-devel libtiff-devel audiofile-devel gtk2-devel subversion kernel-devel git crontabs cronie cronie-anacron wget vim uuid-devel sqlite-devel net-tools gnutls-devel python-devel texinfo libuuid-devel
-clear
-echo ""
-cowsay "INSTALL PHP 7.3 REPOSITORIES"
-echo ""
-sleep 5
-yum install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-yum install -y http://rpms.remirepo.net/enterprise/remi-release-7.rpm
-yum install -y yum-utils
-clear
-echo ""
-cowsay "INSTALL PHP7.3"
-echo ""
-sleep 5
-yum -y remove php*
-yum-config-manager --enable remi-php73
-yum install -y php php-pdo php-mysql php-mbstring php-pear php-process php-xml php-opcache php-ldap php-intl php-soap php-mcrypt php-cli php-gd php-curl php-mysql php-ldap php-zip php-fileinfo 
-clear
-echo ""
-cowsay "CHECK PHP VERSION"
-echo ""
-sleep 5
-php -v
-sleep 5
-clear
-echo ""
-cowsay "INSTALL NODEJS"
-echo ""
-sleep 5
-curl -sL https://rpm.nodesource.com/setup_12.x | bash -
-yum install -y nodejs
-clear
-echo ""
-cowsay "ENABLE AND START MARIADB"
-echo ""
-sleep 5
-systemctl enable mariadb.service
-systemctl start mariadb
-clear
-echo ""
-cowsay "Now that our MariaDB database is running, we want to run a simple security script that will remove some dangerous defaults and lock down access to our database system a little bit. The prompt will ask you for your current root password. Since you just installed MySQL, you most likely won’t have one, so leave it blank by pressing enter. Then the prompt will ask you if you want to set a root password. DO NOT SET ROOT PASSWORD. We secure the database automatically, as part of the install script.  Apart from that you can chose yes for the rest. This will remove some sample users and databases, disable remote root logins, and load these new rules so that MySQL immediately respects the changes we have made."
-echo ""
-sleep 30
-mysql_secure_installation
-clear
-echo ""
-cowsay "ENABLE AND START APACHE"
-echo ""
-sleep 5
-systemctl enable httpd.service
-systemctl start httpd.service
-clear
-echo ""
-cowsay "INSTALL LEGACY PEAR REQUIREMENTS"
-echo ""
-sleep 5
-pear install Console_Getopt
-clear
-echo ""
-cowsay "INSTALL AND CONFIGURE ASTERISK"
-echo ""
-sleep 5
-cd /usr/src
-wget -O jansson.tar.gz https://github.com/akheron/jansson/archive/v2.12.tar.gz
-git clone -b 16 http://gerrit.asterisk.org/asterisk asterisk-16
-clear
-echo ""
-cowsay "COMPILE AND INSTALL JANSSON"
-echo ""
-sleep 5
+echo -e '\tAsterisk User added.'
+
+###
+echo 'Opening Port 80 on Firewall'
+firewall-cmd --zone=public --add-port=80/tcp --permanent 
+firewall-cmd --reload 
+echo -e '\tPort 80 opened.'
+
+###
+echo 'Installing Dependencies, this will take a while'
+yum -y install lynx tftp-server unixODBC mysql-connector-odbc mariadb-server mariadb \
+  httpd ncurses-devel sendmail sendmail-cf sox newt-devel libxml2-devel libtiff-devel \
+  audiofile-devel gtk2-devel subversion kernel-devel git crontabs cronie \
+  cronie-anacron wget vim uuid-devel sqlite-devel net-tools gnutls-devel python-devel texinfo \
+  libuuid-devel 
+echo -e '\tDependencies installed.'
+
+###
+echo 'Installing PHP'
+rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm 
+rpm -Uvh https://mirror.webtatic.com/yum/el7/webtatic-release.rpm 
+yum remove php* 
+yum install -y php56w php56w-pdo php56w-mysql php56w-mbstring php56w-pear php56w-process \
+  php56w-xml php56w-opcache php56w-ldap php56w-intl php56w-soap 
+echo -e '\tPHP Installed.'
+
+###
+echo 'Installing Nodejs'
+curl -sL https://rpm.nodesource.com/setup_8.x | bash - 
+yum install -y nodejs >> install.log 2>&1
+echo -e '\tNodejs installed.'
+
+###
+echo 'Starting MariaDB'
+systemctl start mariadb 
+echo -e '\tMariaDB started.'
+
+###
+echo 'Securing MariaDB'
+mysql -u root -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1')" 
+mysql -u root -e "DELETE FROM mysql.user WHERE User=''" 
+mysql -u root -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\_%'" 
+mysql -u root -e "FLUSH PRIVILEGES" 
+echo -e '\tMariaDB secured.'
+
+###
+echo 'Starting Apache'
+systemctl start httpd
+echo -e '\tApache started.'
+
+###
+echo 'Installing Pear Requirements'
+pear install Console_Getopt 
+echo -e '\tPear reqs installed.'
+
+###
+echo 'Downloading Jansson and Asterisk'
+cd /usr/src 
+wget http://downloads.asterisk.org/pub/telephony/asterisk/asterisk-15-current.tar.gz
+wget -O jansson.tar.gz https://github.com/akheron/jansson/archive/v2.10.tar.gz
+echo -e '\tDownload complete.'
+
+###
+echo 'Compiling and Installing Jansson'
 cd /usr/src
 tar vxfz jansson.tar.gz
 rm -f jansson.tar.gz
@@ -110,140 +99,53 @@ autoreconf -i
 ./configure --libdir=/usr/lib64
 make
 make install
-clear
-echo ""
-cowsay "COMPILE AND INSTALL ASTERISK"
-echo ""
-sleep 5
+echo -e '\tJansson install complete.'
+
+###
+echo 'Compiling and Installing Asterisk, this will take a while'
 cd /usr/src
+tar xvfz asterisk-15-current.tar.gz
+rm -f asterisk-15-current.tar.gz
 cd asterisk-*
 contrib/scripts/install_prereq install
-./configure --libdir=/usr/lib64 --with-pjproject-bundled --with-jansson-bundled
-contrib/scripts/get_mp3_source.sh
-clear
-echo ""
-cowsay "MENU SELECT (If you are using Asterisk 16, enable format_mp3, res_config_mysql, app_macro)"
-echo ""
-sleep 5
-make menuselect.makeopts
-menuselect/menuselect --enable app_macro --enable format_mp3 --enable res_config_mysql menuselect.makeopts
+./configure --with-pjproject-bundled
+make menuselect
 make
 make install
 make config
 ldconfig
-chkconfig asterisk off
-cd /usr/src/asterisk-*/contrib/scripts
-cp safe_asterisk /usr/sbin/safe_asterisk
-chown -R asterisk:asterisk /usr/sbin/safe_asterisk
-chmod 777 /usr/sbin/safe_asterisk
-clear
-echo ""
-cowsay "SET ASTERISK OWNERSHIP PERMISSIONS"
-echo ""
-sleep 5
+echo -e '\tAsterisk install complete.'
+
+###
+echo 'Setting Asterisk Permissions'
 chown asterisk. /var/run/asterisk
 chown -R asterisk. /etc/asterisk
 chown -R asterisk. /var/{lib,log,spool}/asterisk
 chown -R asterisk. /usr/lib64/asterisk
 chown -R asterisk. /var/www/
-clear
-echo ""
-cowsay "INSTALL AND CONFIGURE FREEPBX"
-echo ""
-sleep 5
+echo -e '\tAsterisk permissions set.'
+
+###
+echo 'Updating Apache Config'
 sed -i 's/\(^upload_max_filesize = \).*/\120M/' /etc/php.ini
 sed -i 's/^\(User\|Group\).*/\1 asterisk/' /etc/httpd/conf/httpd.conf
 sed -i 's/AllowOverride None/AllowOverride All/' /etc/httpd/conf/httpd.conf
 systemctl restart httpd.service
-clear
-echo ""
-cowsay "DOWNLOAD AND INSTALL FREEPBX"
-echo ""
-sleep 5
+echo -e '\tApache config updated.'
+
+###
+echo 'Installing FreePBX'
 cd /usr/src
-wget http://mirror.freepbx.org/modules/packages/freepbx/freepbx-15.0-latest.tgz
-tar vxfz freepbx-15.0-latest.tgz
-rm -f freepbx-15.0-latest.tgz
-touch /etc/asterisk/{modules,cdr}.conf
+wget http://mirror.freepbx.org/modules/packages/freepbx/freepbx-14.0-latest.tgz
+tar xfz freepbx-14.0-latest.tgz
+rm -f freepbx-14.0-latest.tgz
 cd freepbx
 ./start_asterisk start
 ./install -n
-clear
-echo ""
-cowsay "AUTOSTART FREEPBX ON BOOT"
-echo ""
-sleep 5
-cat >> /etc/systemd/system/freepbx.service << EOF
-[Unit]
-Description=FreePBX VoIP Server
-After=mariadb.service
+echo -e '\tFreePBX installed.'
  
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-ExecStart=/usr/sbin/fwconsole start -q
-ExecStop=/usr/sbin/fwconsole stop -q
- 
-[Install]
-WantedBy=multi-user.target
+ELAPSED_TIME=$(($SECONDS - $START_TIME))
+echo "Run time: $(($ELAPSED_TIME/60)) min $(($ELAPSED_TIME%60)) sec"    
 
-EOF
-systemctl enable freepbx.service
-ln -s '/etc/systemd/system/freepbx.service' '/etc/systemd/system/multi-user.target.wants/freepbx.service'
-systemctl start freepbx
-clear
-echo ""
-cowsay "DOWNLOAD AND INSTALL SOME FREEPBX MODULES"
-echo ""
-sleep 5
-fwconsole ma downloadinstall cel
-fwconsole ma downloadinstall configedit
-fwconsole ma downloadinstall manager
-fwconsole ma downloadinstall calendar
-fwconsole ma downloadinstall timeconditions
-fwconsole ma downloadinstall bulkhandler
-fwconsole ma downloadinstall customcontexts
-fwconsole ma downloadinstall ringgroups
-fwconsole ma downloadinstall queues
-fwconsole ma downloadinstall ivr
-fwconsole ma downloadinstall asteriskinfo
-fwconsole ma downloadinstall iaxsettings
-fwconsole ma downloadinstall backup
-fwconsole ma downloadinstall callforward
-fwconsole ma downloadinstall announcement
-fwconsole ma downloadinstall callrecording
-fwconsole ma downloadinstall daynight
-fwconsole ma downloadinstall extensionsettings
-fwconsole ma downloadinstall featurecodeadmin
-fwconsole ma downloadinstall recordings
-fwconsole ma downloadinstall sipsettings
-fwconsole ma downloadinstall soundlang
-fwconsole ma downloadinstall voicemail
-fwconsole r a
-clear
-echo ""
-cowsay "INSTALLING SNGREP"
-echo ""
-sleep 5
-cd /usr/src
-echo '[irontec]
-name=Irontec RPMs repository
-baseurl=http://packages.irontec.com/centos/$releasever/$basearch/
-' > /etc/yum.repos.d/irontec.repo
-rpm --import http://packages.irontec.com/public.key
-yum install sngrep -y
-clear
-echo ""
-cowsay "INSTALLING WEBMIN"
-echo ""
-sleep 5
-cd /usr/src
-yum -y install perl perl-Net-SSLeay openssl perl-IO-Tty perl-Encode-Detect
-wget http://prdownloads.sourceforge.net/webadmin/webmin-1.920-1.noarch.rpm
-rpm -U webmin-1.920-1.noarch.rpm
-clear
-echo ""
-cowsay "DONE! REBOOT IN 15 SECONDS"
-echo ""
-sleep 15
-reboot
+var=$(ip addr show eth0 | grep 'inet ' | awk '{print $2}' | cut -f1 -d'/')
+echo "*** All done, please visit http://$var/ to configure your FreePBX server! ***"
